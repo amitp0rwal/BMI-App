@@ -33,6 +33,7 @@ class MyHomeState extends State<MyHomePage>{
   var inController = TextEditingController();
 
   var result = "";
+  var msg = "";
   var bgColor = Colors.indigo.shade100;
 
 
@@ -43,24 +44,14 @@ class MyHomeState extends State<MyHomePage>{
           title: Text("B M I APP"),
           backgroundColor: Colors.lightBlueAccent,
         ),
-        body:Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient  (
-                colors: [
-                  Color(0xff5ee7df),
-                  Color(0xffb490ca),
-                ],
-                begin: FractionalOffset(1.0, 0.5),
-                end: FractionalOffset(0.0, 0.5),
-              )
-          ),
-          child: Center(
-            child: Container(
+        body: Container(
               color: bgColor,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
+                  SizedBox(
+                    height: 20,
+                  ),
                   Text("BMI",style: TextStyle(
                       fontSize: 35,
                       fontWeight:FontWeight.w500 ),),
@@ -101,12 +92,11 @@ class MyHomeState extends State<MyHomePage>{
                   SizedBox(height: 15,),
 
                   ElevatedButton(onPressed: () {
-                    var wt = wtController.text.toString();
-                    var ft = ftController.text.toString();
-                    var inch = inController.text.toString();
+                    var wt = wtController.text;
+                    var ft = ftController.text;
+                    var inch = inController.text;
 
-                    if (wt.trim().isNotEmpty && ft.trim().isNotEmpty && inch.trim().isNotEmpty) {
-                      // BMI Calculation
+                    if (wt.isNotEmpty && ft.isNotEmpty && inch.isNotEmpty) {
 
                       var iWt = int.parse(wt);
                       var iFt = int.parse(ft);
@@ -114,11 +104,9 @@ class MyHomeState extends State<MyHomePage>{
 
                       var tInch = (iFt*12) + iInch; //total inches
                       var tCm = tInch*2.54; //total cm
-                      var tMt= tCm/100; //total miter
+                      var tMt= tCm/100; //total meter
 
                       var bmi = iWt/(tMt*tMt); //final  bmi formula
-
-                      var msg = "";
 
                       if(bmi>25){
                         msg ="YOU ARE OVERWEIGHT";
@@ -126,33 +114,33 @@ class MyHomeState extends State<MyHomePage>{
                       } else if(bmi<18){
                         msg = "YOU ARE UNDERWEIGHT";
                         bgColor = Colors.red.shade200;
-
-                      } else {
+                      } else if(bmi>=18 && bmi<=25) {
                         msg ="YOU ARE HEALTHY";
                         bgColor = Colors.green.shade200;
-
                       }
 
                       setState(() {
-                        result = "$msg \n YOUR BMI IS : ${bmi.toStringAsFixed(2)}";
+                        result = "YOUR BMI IS : ${bmi.toStringAsFixed(2)}";
                       });
                     } else {
                       setState(() {
                         result = "PLEASE FILL THE ALL REQUIRED OPTIONS.";
+                        msg = '';
                       });
                     }
                   },
-                      child: Text("CALCULATE")),
-
-                  SizedBox(height: 12),
-                  Text(result, style:
-                  TextStyle(fontSize: 20,color: Colors.red,
-                      fontWeight: FontWeight.w500),)
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        foregroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadiusGeometry.all(Radius.circular(5)))
+                      ),
+                      child: Text("CALCULATE", style: TextStyle(fontSize: 18 ),)),
+                  SizedBox(height: 20),
+                  Center(child: Text(result, style: TextStyle(fontSize: 20,color: Colors.black, fontWeight: FontWeight.w500),)),
+                  Center(child: Text(msg, style: TextStyle(fontSize: 20,color: Colors.black, fontWeight: FontWeight.w500),))
                 ],
               ),
             ),
-          ),
-        )
     );
   }
 }
